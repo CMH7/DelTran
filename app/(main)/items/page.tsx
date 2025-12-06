@@ -26,7 +26,6 @@ export default function ItemsPage() {
         </div>
         <Button>
           <PlusIcon />
-          Add
         </Button>
       </div>
 

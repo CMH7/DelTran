@@ -5,6 +5,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { EditIcon, TrashIcon } from "lucide-react";
+import { swipeRevealManager, makeSwipeId } from "./swipe-reveal-manager";
 
 interface ItemCardProps extends BaseProp {
   item: Item;
@@ -17,7 +18,8 @@ interface ItemCardProps extends BaseProp {
  *
  * - Slide left to reveal right-side actions (iOS-like horizontal layout).
  * - If released past 80% of the actions width, the card locks open; otherwise it snaps back.
- * - Uses Pointer Events so it works with mouse and touch; keyboard accessibility included.
+ * - Uses Pointer Events so it works with mouse and touch.
+ * - Only one card can be open at a time via swipeRevealManager.
  */
 export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -32,11 +34,27 @@ export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
 
   // Width (px) of the right-side actions area when fully revealed.
   const ACTIONS_WIDTH = 160;
-  // Lock threshold = 80% of ACTIONS_WIDTH (per request)
+  // Lock threshold = 80% of ACTIONS_WIDTH
   const OPEN_THRESHOLD = ACTIONS_WIDTH * 0.8;
 
   const clamp = (v: number, min: number, max: number) =>
     Math.max(min, Math.min(max, v));
+
+  // Unique id for this card used by the manager
+  const swipeIdRef = useRef<string>(makeSwipeId("item-card"));
+
+  // Register with manager so it can close this card when another opens
+  useEffect(() => {
+    const id = swipeIdRef.current;
+    const unregister = swipeRevealManager.register(id, () => {
+      // manager requests this card close
+      setIsOpen(false);
+      setTranslateX(0);
+    });
+    return () => {
+      unregister();
+    };
+  }, []);
 
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -45,6 +63,14 @@ export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
       const el = containerRef.current;
       if (!el) return;
 
+      // Close other cards immediately so only one can be dragged/open at once
+      try {
+        swipeRevealManager.closeOthers(swipeIdRef.current);
+      } catch {
+        // ignore manager errors
+      }
+
+      // capture pointer so we continue receiving moves outside element
       el.setPointerCapture?.(e.pointerId);
       pointerIdRef.current = e.pointerId;
       startXRef.current = e.clientX;
@@ -78,6 +104,24 @@ export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
       setIsOpen(shouldOpen);
       setIsDragging(false);
 
+      // Notify manager when we open so it can close others.
+      if (shouldOpen) {
+        try {
+          swipeRevealManager.open(swipeIdRef.current);
+        } catch {
+          // ignore
+        }
+      } else {
+        // If closed and manager thinks this is open, clear it
+        try {
+          if (swipeRevealManager.isOpen(swipeIdRef.current)) {
+            swipeRevealManager.close(swipeIdRef.current);
+          }
+        } catch {
+          // ignore
+        }
+      }
+
       try {
         const pid = pointerIdRef.current;
         if (pid != null && containerRef.current) {
@@ -105,6 +149,23 @@ export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
   // Sync translateX to open/closed state if toggled programmatically
   useEffect(() => {
     setTranslateX(isOpen ? -ACTIONS_WIDTH : 0);
+    if (isOpen) {
+      // ensure manager knows this card is open
+      try {
+        swipeRevealManager.open(swipeIdRef.current);
+      } catch {
+        // ignore
+      }
+    } else {
+      // clear manager state if necessary
+      try {
+        if (swipeRevealManager.isOpen(swipeIdRef.current)) {
+          swipeRevealManager.close(swipeIdRef.current);
+        }
+      } catch {
+        // ignore
+      }
+    }
   }, [isOpen]);
 
   // Action handlers
