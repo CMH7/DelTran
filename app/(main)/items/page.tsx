@@ -1,10 +1,10 @@
 "use client";
 
+import ItemCard from "@/components/custom/item-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -38,18 +38,7 @@ export default function ItemsPage() {
         <ScrollArea className="h-[calc(100vh-200px)]">
           <div className="grid grid-cols-1 gap-3">
             {items.map((item, i) => (
-              <Card key={`item-${i}`}>
-                <CardHeader>
-                  <CardTitle>
-                    <div className="flex justify-between items-start">
-                      {item.name}
-
-                      <Badge variant="secondary">₱ {item.price}</Badge>
-                    </div>
-                  </CardTitle>
-                  <CardDescription>{item.vendor.name}</CardDescription>
-                </CardHeader>
-              </Card>
+              <ItemCard item={item} key={`item-${i}`} />
             ))}
           </div>
         </ScrollArea>
