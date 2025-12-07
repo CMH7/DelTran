@@ -5,15 +5,11 @@ import {
 } from "@/domain/entities/vendor.schema";
 import { VendorRepo } from "@/domain/repositories/vendor.repo";
 import { fbaseAdminFstore } from "@/infra/db/fstore/fbase-admin";
-import { fbaseClientFstore } from "@/infra/db/fstore/fbase-client";
-import { addDoc, collection, getDocs, query } from "firebase/firestore";
 
 export class FStoreVendorAdapter implements VendorRepo {
 	async createVendor(vendor: Vendor): Promise<Vendor> {
 		try {
-			const vendorsCol = collection(fbaseClientFstore, "vendors");
-			await addDoc(vendorsCol, vendor);
-
+			await fbaseAdminFstore.collection("vendors").add(vendor);
 			return vendor;
 		} catch (err: unknown) {
 			throw err;

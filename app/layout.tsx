@@ -2,16 +2,16 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body>
-        <Toaster />
-        {children}
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body>
+				<Toaster position="top-right" />
+				{children}
+			</body>
+		</html>
+	);
 }
