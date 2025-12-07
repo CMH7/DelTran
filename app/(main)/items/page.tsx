@@ -1,5 +1,6 @@
 "use client";
 
+import Container from "@/components/custom/container";
 import ItemCard from "@/components/custom/item-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ export default function ItemsPage() {
   const { items } = useItems();
 
   return (
-    <div className="max-w-screen py-3 px-6 grid grid-cols-1 gap-4">
+    <Container>
       <div className="flex justify-between">
         <div className="flex items-center gap-1">
           <BoxIcon />
@@ -42,6 +43,6 @@ export default function ItemsPage() {
           </div>
         </ScrollArea>
       </div>
-    </div>
+    </Container>
   );
 }

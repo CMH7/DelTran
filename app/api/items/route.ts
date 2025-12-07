@@ -15,6 +15,7 @@ export async function GET() {
         name: "Vicky",
         phone: "123-456-7890",
         address: "123 Main St",
+        note: "",
       },
     },
     {
@@ -29,6 +30,7 @@ export async function GET() {
         name: "Vicky",
         phone: "123-456-7890",
         address: "123 Main St",
+        note: "",
       },
     },
     {
@@ -43,6 +45,7 @@ export async function GET() {
         name: "Vicky",
         phone: "123-456-7890",
         address: "123 Main St",
+        note: "",
       },
     },
   ];

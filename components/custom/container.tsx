@@ -4,14 +4,14 @@ interface ContainerProps extends BaseProp {}
 
 export default function Container({
   children,
-  visible,
+  visible = true,
   className,
 }: ContainerProps) {
   if (!visible) return null;
 
   return (
     <div
-      className={`flex flex-col items-center justify-center min-h-screen ${className}`}
+      className={`max-w-screen py-3 px-6 grid grid-cols-1 gap-4 ${className}`}
     >
       {children}
     </div>
