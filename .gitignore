@@ -39,3 +39,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/deltran-b2bea-firebase-adminsdk-fbsvc-579ab94448.json

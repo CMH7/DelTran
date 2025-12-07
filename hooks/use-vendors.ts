@@ -1,20 +1,26 @@
-"use client";
+import { VendorDoc } from "@/domain/entities/vendor.schema";
+import { useQuery } from "@tanstack/react-query";
 
-import { Vendor } from "@/domain/entities/vendor.schema";
-import { useEffect, useState } from "react";
+export const useVendors = () => {
+	return useQuery({
+		queryKey: ["list-vendors"],
+		queryFn: async () => {
+			const res = await fetch("/api/vendors", {
+				method: "GET",
+				headers: { "Content-Type": "application/json" },
+			});
 
-export default function useVendors() {
-  const [vendors, setVendors] = useState<Vendor[]>([]);
+			const data = (await res.json()) as {
+				success: boolean;
+				message?: string;
+				data: VendorDoc[];
+			};
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      const response = await fetch("/api/vendors");
-      const data = await response.json();
-      setVendors(data);
-    };
+			console.log(data);
 
-    fetchItems();
-  }, []);
+			if (!data.success) throw new Error(data.message);
 
-  return { vendors };
-}
+			return data.data ?? [];
+		},
+	});
+};
