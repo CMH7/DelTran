@@ -15,17 +15,23 @@ export class FStoreVendorAdapter implements VendorRepo {
 			throw err;
 		}
 	}
-	async getVendorById(id: string): Promise<Vendor | null> {
-		throw new Error("Method not implemented.");
+	async getVendorById(id: string): Promise<VendorDoc | null> {
+		const doc = await fbaseAdminFstore.collection("vendors").doc(id).get();
+		if (!doc.exists) return null;
+		return VendorDocSchema.parse({ id: doc.id, ...doc.data() });
 	}
 	async updateVendor(
 		id: string,
 		vendor: Partial<Vendor>,
-	): Promise<Vendor | null> {
-		throw new Error("Method not implemented.");
+	): Promise<VendorDoc | null> {
+		await fbaseAdminFstore.collection("vendors").doc(id).update(vendor);
+		const updated = await fbaseAdminFstore.collection("vendors").doc(id).get();
+		if (!updated.exists) return null;
+		return VendorDocSchema.parse({ id: updated.id, ...updated.data() });
 	}
 	async deleteVendor(id: string): Promise<boolean> {
-		throw new Error("Method not implemented.");
+		await fbaseAdminFstore.collection("vendors").doc(id).delete();
+		return true;
 	}
 
 	async listVendors(): Promise<VendorDoc[]> {

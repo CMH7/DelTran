@@ -9,15 +9,15 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import { EditIcon, TrashIcon } from "lucide-react";
-import { Vendor } from "@/domain/entities/vendor.schema";
+import { VendorDoc } from "@/domain/entities/vendor.schema";
 import useSwipeReveal from "../../hooks/use-swipe-reveal";
 import { CopyButton } from "../ui/shadcn-io/copy-button";
 import { toast } from "sonner";
+import { useDeleteVendor } from "@/hooks/vendor/use-delete-vendor";
+import { useRouter } from "next/navigation";
 
 interface VendorCardProps extends BaseProp {
-	vendor: Vendor;
-	onEdit?: (vendor: Vendor) => void;
-	onDelete?: (vendor: Vendor) => void;
+	vendor: VendorDoc;
 }
 
 /**
@@ -26,11 +26,10 @@ interface VendorCardProps extends BaseProp {
  * Uses the reusable `useSwipeReveal` hook to keep component logic minimal and
  * share swipe-to-reveal behavior across multiple card components.
  */
-export default function VendorCard({
-	vendor,
-	onEdit,
-	onDelete,
-}: VendorCardProps) {
+export default function VendorCard({ vendor }: VendorCardProps) {
+	const router = useRouter();
+	const { mutate: deleteVendor } = useDeleteVendor();
+
 	const {
 		containerRef,
 		translateX,
@@ -48,13 +47,15 @@ export default function VendorCard({
 	// Action handlers
 	const handleEdit = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		onEdit ? onEdit(vendor) : console.log("Edit", vendor);
+		router.push(`/vendors/${vendor.id}/edit`);
 		setIsOpen(false);
 	};
 
 	const handleDelete = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		onDelete ? onDelete(vendor) : console.log("Delete", vendor);
+		if (confirm(`Delete ${vendor.name}?`)) {
+			deleteVendor(vendor.id);
+		}
 		setIsOpen(false);
 	};
 

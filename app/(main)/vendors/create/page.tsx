@@ -20,14 +20,14 @@ import { useCreateVendor } from "@/hooks/vendor/use-create-vendor";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function Page() {
+	const { mutateAsync: createVendorAsync, isPending } = useCreateVendor();
+
 	const vendorDefaultValues: Vendor = {
 		name: "",
 		phone: "",
 		address: "",
 		note: "",
 	};
-
-	const { mutateAsync: createVendorAsync, isPending } = useCreateVendor();
 
 	const form = useForm({
 		defaultValues: vendorDefaultValues,
@@ -58,8 +58,7 @@ export default function Page() {
 							<form.Field name="name">
 								{(field) => {
 									const isInvalid =
-										field.state.meta.isTouched &&
-										!field.state.meta.isValid;
+										field.state.meta.isTouched && !field.state.meta.isValid;
 
 									return (
 										<Field data-invalid={isInvalid}>
@@ -69,21 +68,13 @@ export default function Page() {
 												name={field.name}
 												value={field.state.value}
 												onBlur={field.handleBlur}
-												onChange={(e) =>
-													field.handleChange(
-														e.target.value,
-													)
-												}
+												onChange={(e) => field.handleChange(e.target.value)}
 												aria-invalid={isInvalid}
 												placeholder="Vendor Name"
 												autoComplete="off"
 											/>
 											{isInvalid && (
-												<FieldError
-													errors={
-														field.state.meta.errors
-													}
-												/>
+												<FieldError errors={field.state.meta.errors} />
 											)}
 										</Field>
 									);
@@ -93,8 +84,7 @@ export default function Page() {
 							<form.Field name="phone">
 								{(field) => {
 									const isInvalid =
-										field.state.meta.isTouched &&
-										!field.state.meta.isValid;
+										field.state.meta.isTouched && !field.state.meta.isValid;
 
 									return (
 										<Field data-invalid={isInvalid}>
@@ -104,21 +94,13 @@ export default function Page() {
 												name={field.name}
 												value={field.state.value}
 												onBlur={field.handleBlur}
-												onChange={(e) =>
-													field.handleChange(
-														e.target.value,
-													)
-												}
+												onChange={(e) => field.handleChange(e.target.value)}
 												aria-invalid={isInvalid}
 												placeholder="09xx xxx xxx"
 												autoComplete="off"
 											/>
 											{isInvalid && (
-												<FieldError
-													errors={
-														field.state.meta.errors
-													}
-												/>
+												<FieldError errors={field.state.meta.errors} />
 											)}
 										</Field>
 									);
@@ -128,8 +110,7 @@ export default function Page() {
 							<form.Field name="address">
 								{(field) => {
 									const isInvalid =
-										field.state.meta.isTouched &&
-										!field.state.meta.isValid;
+										field.state.meta.isTouched && !field.state.meta.isValid;
 
 									return (
 										<Field data-invalid={isInvalid}>
@@ -139,21 +120,13 @@ export default function Page() {
 												name={field.name}
 												value={field.state.value}
 												onBlur={field.handleBlur}
-												onChange={(e) =>
-													field.handleChange(
-														e.target.value,
-													)
-												}
+												onChange={(e) => field.handleChange(e.target.value)}
 												aria-invalid={isInvalid}
 												placeholder="Manila, Philippines"
 												autoComplete="off"
 											/>
 											{isInvalid && (
-												<FieldError
-													errors={
-														field.state.meta.errors
-													}
-												/>
+												<FieldError errors={field.state.meta.errors} />
 											)}
 										</Field>
 									);
@@ -163,8 +136,7 @@ export default function Page() {
 							<form.Field name="note">
 								{(field) => {
 									const isInvalid =
-										field.state.meta.isTouched &&
-										!field.state.meta.isValid;
+										field.state.meta.isTouched && !field.state.meta.isValid;
 
 									return (
 										<Field data-invalid={isInvalid}>
@@ -174,21 +146,13 @@ export default function Page() {
 												name={field.name}
 												value={field.state.value}
 												onBlur={field.handleBlur}
-												onChange={(e) =>
-													field.handleChange(
-														e.target.value,
-													)
-												}
+												onChange={(e) => field.handleChange(e.target.value)}
 												aria-invalid={isInvalid}
 												placeholder="Full payment first before item..."
 												autoComplete="off"
 											/>
 											{isInvalid && (
-												<FieldError
-													errors={
-														field.state.meta.errors
-													}
-												/>
+												<FieldError errors={field.state.meta.errors} />
 											)}
 										</Field>
 									);
@@ -203,10 +167,7 @@ export default function Page() {
 							<Spinner />
 						) : (
 							<>
-								<Button
-									variant="outline"
-									onClick={() => form.reset()}
-								>
+								<Button variant="outline" onClick={() => form.reset()}>
 									Reset
 								</Button>
 								<Button type="submit" form="create-vendor-form">

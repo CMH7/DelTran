@@ -1,16 +1,18 @@
 import React from "react";
-import { Item } from "@/domain/entities/item.schema";
+import { ItemDoc } from "@/domain/entities/item.schema";
 import { BaseProp } from "../props/base-prop";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { EditIcon, TrashIcon } from "lucide-react";
 import useSwipeReveal from "../../hooks/use-swipe-reveal";
+import { useDeleteItem } from "@/hooks/item/use-delete-item";
+import { useRouter } from "next/navigation";
+import { formatPeso } from "@/lib/utils";
 
 interface ItemCardProps extends BaseProp {
-	item: Item;
-	onEdit?: (item: Item) => void;
-	onDelete?: (item: Item) => void;
+	item: ItemDoc;
+	vendorName?: string;
 }
 
 /**
@@ -21,7 +23,10 @@ interface ItemCardProps extends BaseProp {
  * - Uses Pointer Events so it works with mouse and touch.
  * - Only one card can be open at a time via the shared manager inside the hook.
  */
-export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
+export default function ItemCard({ item, vendorName }: ItemCardProps) {
+	const router = useRouter();
+	const { mutate: deleteItem } = useDeleteItem();
+
 	// Use the reusable hook for swipe-to-reveal behavior
 	const {
 		containerRef,
@@ -40,13 +45,15 @@ export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
 	// Action handlers
 	const handleEdit = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		onEdit ? onEdit(item) : console.log("Edit", item);
+		router.push(`/items/${item.id}/edit`);
 		setIsOpen(false);
 	};
 
 	const handleDelete = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		onDelete ? onDelete(item) : console.log("Delete", item);
+		if (confirm(`Delete ${item.name}?`)) {
+			deleteItem(item.id);
+		}
 		setIsOpen(false);
 	};
 
@@ -101,11 +108,13 @@ export default function ItemCard({ item, onEdit, onDelete }: ItemCardProps) {
 							<div className="flex justify-between items-start">
 								<div className="truncate">{item.name}</div>
 								<Badge variant="secondary">
-									₱ {item.price}
+									{formatPeso(item.price)}
 								</Badge>
 							</div>
 						</CardTitle>
-						<CardDescription>{item.vendor.name}</CardDescription>
+						<CardDescription>
+							{vendorName || "Unknown Vendor"}
+						</CardDescription>
 					</CardHeader>
 				</Card>
 			</div>
