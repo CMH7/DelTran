@@ -38,7 +38,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const transactionData = body as Deltran;
+  const transactionData: Deltran = {
+    ...body,
+    tranDate: new Date(body.tranDate),
+  };
   const result = await createTransactionCase.execute(transactionData);
   return NextResponse.json(
     { success: !!result.data, data: result.data, message: result.message },

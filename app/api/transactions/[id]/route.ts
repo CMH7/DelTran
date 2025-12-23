@@ -24,7 +24,10 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const body = await req.json();
-  const transactionData = body as Partial<Deltran>;
+  const transactionData: Partial<Deltran> = {
+    ...body,
+    tranDate: body.tranDate ? new Date(body.tranDate) : undefined,
+  };
   const result = await updateTransactionCase.execute(id, transactionData);
   return NextResponse.json(
     { success: !!result.data, data: result.data, message: result.message },

@@ -61,7 +61,7 @@ export default function Page() {
 	const form = useForm({
 		defaultValues: transactionDefaultValues,
 		validators: {
-			onSubmit: DeltranSchema,
+			onSubmit: DeltranSchema as any,
 		},
 		onSubmit: async ({ value }) => {
 			await updateTransactionAsync({ id, transaction: value });

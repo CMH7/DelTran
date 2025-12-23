@@ -7,7 +7,9 @@
       "Bash(find \"C:\\\\Users\\\\MP-UNTAPPED\\\\documents\\\\personal\\\\projects\\\\deltran\\\\deltran\\\\app\\\\\\(main\\)\\\\items\" -name \"*.tsx\")",
       "Bash(find:*)",
       "Bash(npm run build)",
-      "Bash(\"C:\\\\Users\\\\MP-UNTAPPED\\\\documents\\\\personal\\\\projects\\\\deltran\\\\deltran\\\\app\\\\\\(main\\)\\\\transactions\\\\create\\\\page.tsx\")"
+      "Bash(\"C:\\\\Users\\\\MP-UNTAPPED\\\\documents\\\\personal\\\\projects\\\\deltran\\\\deltran\\\\app\\\\\\(main\\)\\\\transactions\\\\create\\\\page.tsx\")",
+      "Bash(cat:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

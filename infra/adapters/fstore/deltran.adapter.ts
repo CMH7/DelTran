@@ -12,14 +12,24 @@ export class FStoreDeltranAdapter implements DeltranRepo {
   async getTransactionById(id: string): Promise<DeltranDoc | null> {
     const doc = await fbaseAdminFstore.collection("transactions").doc(id).get();
     if (!doc.exists) return null;
-    return DeltranDocSchema.parse({ id: doc.id, ...doc.data() });
+    const data = doc.data();
+    // Convert Firestore Timestamp to Date
+    if (data?.tranDate?.toDate) {
+      data.tranDate = data.tranDate.toDate();
+    }
+    return DeltranDocSchema.parse({ id: doc.id, ...data });
   }
 
   async updateTransaction(id: string, transaction: Partial<Deltran>): Promise<DeltranDoc | null> {
     await fbaseAdminFstore.collection("transactions").doc(id).update(transaction);
     const updated = await fbaseAdminFstore.collection("transactions").doc(id).get();
     if (!updated.exists) return null;
-    return DeltranDocSchema.parse({ id: updated.id, ...updated.data() });
+    const data = updated.data();
+    // Convert Firestore Timestamp to Date
+    if (data?.tranDate?.toDate) {
+      data.tranDate = data.tranDate.toDate();
+    }
+    return DeltranDocSchema.parse({ id: updated.id, ...data });
   }
 
   async deleteTransaction(id: string): Promise<boolean> {
@@ -47,7 +57,11 @@ export class FStoreDeltranAdapter implements DeltranRepo {
 
     const snap = await query.get();
     return snap.docs.map((transaction: any) => {
-      const data = transaction.data() as Deltran;
+      const data = transaction.data();
+      // Convert Firestore Timestamp to Date
+      if (data?.tranDate?.toDate) {
+        data.tranDate = data.tranDate.toDate();
+      }
       return DeltranDocSchema.parse({ id: transaction.id, ...data });
     });
   }

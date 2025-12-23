@@ -41,7 +41,7 @@ export default function Page() {
 	const form = useForm({
 		defaultValues: customerDefaultValues,
 		validators: {
-			onSubmit: CustomerSchema,
+			onSubmit: CustomerSchema as any,
 		},
 		onSubmit: async ({ value }) => {
 			toast.success("Customer updated successfully!");
